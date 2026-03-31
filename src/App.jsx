@@ -19,6 +19,7 @@ const UI_TEXT = {
     sourceLabel: 'Source:',
     reloadLabel: 'Reload',
     downloadLabel: 'Download CSV',
+    macroPlotsLabel: 'Open Macro Plots',
     chartTitle: 'Crude oil prices, $2014/bbl',
     chartSubtitle: '2026 is year-to-date data.',
   },
@@ -29,6 +30,7 @@ const UI_TEXT = {
     sourceLabel: 'Fuente:',
     reloadLabel: 'Recargar',
     downloadLabel: 'Descargar CSV',
+    macroPlotsLabel: 'Abrir Macro Plots',
     chartTitle: 'Precio del petroleo, $2014/bbl',
     chartSubtitle: '2026 corresponde a datos acumulados del año.',
   },
@@ -313,14 +315,19 @@ export default function App() {
               <button type="button" className="lang-btn" onClick={() => downloadSeriesCsv(data.series)}>
                 {ui.downloadLabel}
               </button>
-              <button type="button" className="lang-btn" onClick={() => { setProgress(0); setAnimationKey((value) => value + 1); }}>
-                {ui.reloadLabel}
-              </button>
               <button type="button" className={`lang-btn ${lang === 'es' ? 'lang-btn-active' : ''}`} onClick={() => setLang('es')}>ES</button>
               <button type="button" className={`lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}`} onClick={() => setLang('en')}>EN</button>
             </div>
           </div>
           <div className="brand-row">
+            <a
+              className="lang-btn link-btn"
+              href="https://sebabecerra.github.io/macro-plots/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {ui.macroPlotsLabel}
+            </a>
             <img src={`${import.meta.env.BASE_URL}logo_clean.png`} alt="SB" className="brand-logo" />
           </div>
         </div>
@@ -398,6 +405,27 @@ export default function App() {
 
           <div className="footer-note"><em>{ui.noteLabel} {ui.chartSubtitle}</em></div>
           <div className="footer-source"><em>{ui.sourceLabel} {data.source}</em></div>
+          <div className="corner-actions">
+            <a
+              className="lang-btn link-btn"
+              href="https://sebabecerra.github.io/macro-plots/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {ui.macroPlotsLabel}
+            </a>
+            <button
+              type="button"
+              className="play-btn"
+              aria-label={ui.reloadLabel}
+              onClick={() => {
+                setProgress(0);
+                setAnimationKey((value) => value + 1);
+              }}
+            >
+              ▶
+            </button>
+          </div>
         </div>
       </section>
     </main>

@@ -21,7 +21,7 @@ body {
 }
 
 .page {
-  width: min(1480px, calc(100vw - 32px));
+  width: min(1440px, calc(100vw - 32px));
   margin: 10px auto 20px;
 }
 
@@ -60,6 +60,19 @@ body {
   cursor: pointer;
 }
 
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border: 1px solid rgba(255, 209, 102, 0.28);
+  background: rgba(255, 209, 102, 0.08);
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: #ffd166;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .lang-btn-active {
   border-color: rgba(255, 209, 102, 0.55);
   color: #ffd166;
@@ -68,11 +81,13 @@ body {
 .brand-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: 8px;
+  align-items: center;
+  gap: 16px;
+  margin-top: -6px;
 }
 
 .brand-logo {
-  width: 58px;
+  width: 78px;
   height: auto;
   opacity: 0.96;
   filter: brightness(0) invert(1);
@@ -113,6 +128,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   overflow: visible;
+  position: relative;
 }
 
 .chart-title {
@@ -218,6 +234,28 @@ body {
 .footer-source {
   margin-top: 2px;
   margin-bottom: 12px;
+}
+
+.corner-actions {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.play-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 209, 102, 0.08);
+  color: #ffd166;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .status {
