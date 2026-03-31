@@ -122,6 +122,7 @@ body {
 .axis-y {
   font-size: 17px;
   font-weight: 600;
+  fill: rgba(242, 242, 242, 0.9);
 }
 
 .axis-x {

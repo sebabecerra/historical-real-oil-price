@@ -17,6 +17,8 @@ const UI_TEXT = {
     subtitle: 'Long-run reconstructed real oil price series extended to 2026 and rendered in the visual language of the commodity monitor.',
     noteLabel: 'Note:',
     sourceLabel: 'Source:',
+    reloadLabel: 'Reload',
+    downloadLabel: 'Download CSV',
     chartTitle: 'Crude oil prices, $2014/bbl',
     chartSubtitle: '2026 is year-to-date data.',
   },
@@ -25,6 +27,8 @@ const UI_TEXT = {
     subtitle: 'Serie historica reconstruida del precio real del petroleo extendida a 2026 y renderizada con el lenguaje visual del monitor de commodities.',
     noteLabel: 'Nota:',
     sourceLabel: 'Fuente:',
+    reloadLabel: 'Recargar',
+    downloadLabel: 'Descargar CSV',
     chartTitle: 'Precio del petroleo, $2014/bbl',
     chartSubtitle: '2026 corresponde a datos acumulados del año.',
   },
@@ -83,6 +87,26 @@ const BODY_TRANSLATIONS = {
 function translate(lang, text, map) {
   if (lang === 'en') return text;
   return map[lang]?.[text] ?? text;
+}
+
+function downloadSeriesCsv(series) {
+  const rows = [
+    ['year', 'date', 'value_2014_bbl'],
+    ...series.map((item) => [item.year, item.date, item.value_2014_bbl]),
+  ];
+  const csv = rows
+    .map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'historical-real-oil-price.csv';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 function xScale(year, minYear, maxYear) {
@@ -225,6 +249,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [lang, setLang] = useState('en');
+  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
     fetch('/data/oil-history.json')
@@ -250,7 +275,7 @@ export default function App() {
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [data]);
+  }, [data, animationKey]);
 
   const chart = useMemo(() => {
     if (!data) return null;
@@ -284,6 +309,12 @@ export default function App() {
               <p className="dashboard-subtitle">{ui.subtitle}</p>
             </div>
             <div className="lang-switch" role="group" aria-label="Language switch">
+              <button type="button" className="lang-btn" onClick={() => downloadSeriesCsv(data.series)}>
+                {ui.downloadLabel}
+              </button>
+              <button type="button" className="lang-btn" onClick={() => { setProgress(0); setAnimationKey((value) => value + 1); }}>
+                {ui.reloadLabel}
+              </button>
               <button type="button" className={`lang-btn ${lang === 'es' ? 'lang-btn-active' : ''}`} onClick={() => setLang('es')}>ES</button>
               <button type="button" className={`lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}`} onClick={() => setLang('en')}>EN</button>
             </div>
@@ -312,9 +343,9 @@ export default function App() {
             {X_TICKS.map((tick) => {
             const x = xScale(tick, chart.minYear, chart.maxYear);
             return (
-              <g key={tick}>
+                <g key={tick}>
                   <text x={x} y={MARGIN.top + INNER_HEIGHT + 24} className="axis axis-x" textAnchor="middle">
-                    {tick}
+                    {tick === 2026 ? '2026*' : tick}
                   </text>
                 </g>
               );
