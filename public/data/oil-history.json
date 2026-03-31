@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-31T01:52:12.020Z",
+  "generatedAt": "2026-03-31T01:58:31.798Z",
   "title": "Crude oil prices, $2014/bbl",
   "subtitle": "2026 is year-to-date data.",
   "source": "Bloomberg, BP, Federal Reserve, Haver Analytics, various news sources, Goldman Sachs GIR.",
@@ -1150,6 +1150,7 @@
   "overlayBoxes": [
     {
       "title": "1864 — Civil War",
+      "anchorYear": 1864,
       "x": 64,
       "y": 22,
       "w": 186,
@@ -1157,6 +1158,7 @@
     },
     {
       "title": "1973 — Arab Oil Embargo",
+      "anchorYear": 1973,
       "x": 748,
       "y": 22,
       "w": 148,
@@ -1164,6 +1166,7 @@
     },
     {
       "title": "1979 — Iranian Revolution",
+      "anchorYear": 1979,
       "x": 912,
       "y": 22,
       "w": 172,
@@ -1171,6 +1174,7 @@
     },
     {
       "title": "1990 — Gulf War",
+      "anchorYear": 1990,
       "x": 1100,
       "y": 22,
       "w": 146,
@@ -1178,6 +1182,7 @@
     },
     {
       "title": "2008 — Financial Crisis",
+      "anchorYear": 2008,
       "x": 1262,
       "y": 22,
       "w": 154,
@@ -1185,6 +1190,7 @@
     },
     {
       "title": "2026 — We are here 🔴",
+      "anchorYear": 2026,
       "x": 1418,
       "y": 22,
       "w": 148,

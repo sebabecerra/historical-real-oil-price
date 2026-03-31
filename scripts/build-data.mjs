@@ -68,12 +68,12 @@ const annotations = [
 ];
 
 const overlayBoxes = [
-  { title: '1864 — Civil War', x: 64, y: 22, w: 186, h: 40 },
-  { title: '1973 — Arab Oil Embargo', x: 748, y: 22, w: 148, h: 40 },
-  { title: '1979 — Iranian Revolution', x: 912, y: 22, w: 172, h: 40 },
-  { title: '1990 — Gulf War', x: 1100, y: 22, w: 146, h: 40 },
-  { title: '2008 — Financial Crisis', x: 1262, y: 22, w: 154, h: 40 },
-  { title: '2026 — We are here 🔴', x: 1418, y: 22, w: 148, h: 40 },
+  { title: '1864 — Civil War', anchorYear: 1864, x: 64, y: 22, w: 186, h: 40 },
+  { title: '1973 — Arab Oil Embargo', anchorYear: 1973, x: 748, y: 22, w: 148, h: 40 },
+  { title: '1979 — Iranian Revolution', anchorYear: 1979, x: 912, y: 22, w: 172, h: 40 },
+  { title: '1990 — Gulf War', anchorYear: 1990, x: 1100, y: 22, w: 146, h: 40 },
+  { title: '2008 — Financial Crisis', anchorYear: 2008, x: 1262, y: 22, w: 154, h: 40 },
+  { title: '2026 — We are here 🔴', anchorYear: 2026, x: 1418, y: 22, w: 148, h: 40 },
 ];
 
 function parseCsv(text) {
