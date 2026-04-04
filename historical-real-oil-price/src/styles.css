@@ -80,13 +80,14 @@ body {
 
 .brand-row {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   gap: 16px;
-  margin-top: -6px;
+  margin-top: 10px;
 }
 
 .brand-logo {
+  margin-left: auto;
   width: 78px;
   height: auto;
   opacity: 0.96;
@@ -223,12 +224,13 @@ body {
 .footer-note,
 .footer-source {
   padding-left: 14px;
+  padding-right: 64px;
   color: rgba(220, 220, 220, 0.82);
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .footer-note {
-  margin-top: -48px;
+  margin-top: -18px;
 }
 
 .footer-source {
@@ -242,7 +244,7 @@ body {
   bottom: 14px;
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 12px;
 }
 
 .play-btn {

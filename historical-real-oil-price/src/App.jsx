@@ -20,6 +20,7 @@ const UI_TEXT = {
     reloadLabel: 'Reload',
     downloadLabel: 'Download CSV',
     macroPlotsLabel: 'Open Macro Plots',
+    rallyLabel: 'Rally 2026',
     chartTitle: 'Crude oil prices, $2014/bbl',
     chartSubtitle: '2026 is year-to-date data.',
   },
@@ -31,6 +32,7 @@ const UI_TEXT = {
     reloadLabel: 'Recargar',
     downloadLabel: 'Descargar CSV',
     macroPlotsLabel: 'Abrir Macro Plots',
+    rallyLabel: 'Rally 2026',
     chartTitle: 'Precio del petroleo, $2014/bbl',
     chartSubtitle: '2026 corresponde a datos acumulados del año.',
   },
@@ -253,6 +255,10 @@ export default function App() {
   const [lang, setLang] = useState('en');
   const [animationKey, setAnimationKey] = useState(0);
   const dataUrl = `${import.meta.env.BASE_URL}data/oil-history.json`;
+  const baseUrl = import.meta.env.BASE_URL;
+  const rallyUrl = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+    ? "http://127.0.0.1:4182/"
+    : (baseUrl.endsWith("/historical-real-oil-price/") ? baseUrl.replace(/\/historical-real-oil-price\/$/, "/rally-oil-price/") : "/rally-oil-price/");
 
   useEffect(() => {
     fetch(dataUrl)
@@ -327,6 +333,12 @@ export default function App() {
               rel="noreferrer"
             >
               {ui.macroPlotsLabel}
+            </a>
+            <a
+              className="lang-btn link-btn"
+              href={rallyUrl}
+            >
+              {ui.rallyLabel}
             </a>
             <img src={`${import.meta.env.BASE_URL}logo_clean.png`} alt="SB" className="brand-logo" />
           </div>
@@ -406,14 +418,6 @@ export default function App() {
           <div className="footer-note"><em>{ui.noteLabel} {ui.chartSubtitle}</em></div>
           <div className="footer-source"><em>{ui.sourceLabel} {data.source}</em></div>
           <div className="corner-actions">
-            <a
-              className="lang-btn link-btn"
-              href="https://sebabecerra.github.io/macro-plots/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {ui.macroPlotsLabel}
-            </a>
             <button
               type="button"
               className="play-btn"
