@@ -1,28 +1,28 @@
 {
-  "generatedAt": "2026-04-05T23:19:28.051Z",
+  "generatedAt": "2026-04-06T00:50:57.902Z",
   "title": "WTI Spot and ROC(12)",
   "subtitle": "Monthly WTI spot candles with 12-month rate of change.",
-  "source": "FRED DCOILWTICO + Apr-2026 provisional snapshot",
+  "source": "FRED DCOILWTICO + Yahoo Finance CL=F current-month snapshot",
   "currentMonthExtension": {
     "month": "2026-04",
     "date": "2026-04-01",
     "open": 101.72,
-    "high": 113.97,
+    "high": 115.48,
     "low": 96.5,
-    "close": 111.54,
-    "snapshotDate": "2026-04-02",
-    "snapshotSource": "StockCharts reference snapshot provided by user"
+    "close": 112.39,
+    "snapshotDate": "2026-04-06",
+    "snapshotSource": "Yahoo Finance CL=F"
   },
   "latest": {
     "month": "2026-04",
     "date": "2026-04-01",
     "open": 101.72,
-    "high": 113.97,
+    "high": 115.48,
     "low": 96.5,
-    "close": 111.54,
-    "snapshotDate": "2026-04-02",
-    "snapshotSource": "StockCharts reference snapshot provided by user",
-    "roc12": 87.3
+    "close": 112.39,
+    "snapshotDate": "2026-04-06",
+    "snapshotSource": "Yahoo Finance CL=F",
+    "roc12": 88.73
   },
   "range": {
     "start": "1986-01-01",
@@ -4407,12 +4407,12 @@
       "month": "2026-04",
       "date": "2026-04-01",
       "open": 101.72,
-      "high": 113.97,
+      "high": 115.48,
       "low": 96.5,
-      "close": 111.54,
-      "snapshotDate": "2026-04-02",
-      "snapshotSource": "StockCharts reference snapshot provided by user",
-      "roc12": 87.3
+      "close": 112.39,
+      "snapshotDate": "2026-04-06",
+      "snapshotSource": "Yahoo Finance CL=F",
+      "roc12": 88.73
     }
   ]
 }

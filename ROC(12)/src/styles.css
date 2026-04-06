@@ -33,7 +33,12 @@ body { margin: 0; background: #000000; }
 .footer-note, .footer-source { padding-left: 16px; padding-right: 64px; color: rgba(220,220,220,0.82); font-size: 14px; }
 .footer-note { margin: 0; margin-top: 4px; }
 .footer-source { margin: 4px 0 12px; }
-.footer-note span, .footer-source span { font-style: italic; font-weight: 700; }
+.footer-label { font-style: italic; font-weight: 700; }
+.formula-inline {
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
 .footer-note sub {
   font-size: 0.7em;
   vertical-align: sub;

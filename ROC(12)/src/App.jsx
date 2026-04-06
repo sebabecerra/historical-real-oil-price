@@ -8,11 +8,14 @@ const UI = {
     downloadPng: "Download PNG",
     reloadLabel: "Reload",
     noteLabel: "Note:",
-    topNoteText: "Top panel shows monthly WTI prices: green when the closing price is above the opening price, and red when it is below. Each monthly bar uses the first observed price of the month as the opening price and the last observed price as the closing price. For April 2026, the chart uses a provisional month-to-date snapshot to capture the current move.",
-    bottomNoteText: "Bottom panel shows ROC =",
-    formulaText: "(pt - pt-12) / pt-12 * 100, where p is the daily closing price.",
+    topNoteText: "Monthly WTI prices (green: close > open; red: close < open). The current month uses the latest available data point (Yahoo Finance, CL=F). The bottom panel shows 12-month ROC:",
+    bottomNoteText: "",
+    formulaText: "(p",
+    formulaTailText: " - p",
+    formulaMidText: ") / p",
+    formulaEndText: "where p is the monthly closing price.",
     sourceLabel: "Source:",
-    sourceText: "FRED DCOILWTICO; Ted @TedPillows, @marketmike.",
+    sourceText: "FRED DCOILWTICO; Yahoo Finance CL=F; Ted @TedPillows, @marketmike.",
     homeLabel: "Open Macro Plots",
     historicalLabel: "Historical Oil Prices",
     rallyLabel: "Rally 2026",
@@ -24,11 +27,14 @@ const UI = {
     downloadPng: "Descargar PNG",
     reloadLabel: "Recargar",
     noteLabel: "Nota:",
-    topNoteText: "El panel superior muestra precios mensuales del WTI: en verde cuando el precio de cierre es mayor que el de apertura y en rojo cuando es menor. Cada barra mensual usa como precio de apertura el primer precio observado del mes y como precio de cierre el ultimo. Para abril de 2026, el grafico usa un snapshot provisional del mes en curso para capturar el movimiento actual.",
-    bottomNoteText: "El panel inferior muestra ROC =",
-    formulaText: "(pt - pt-12) / pt-12 * 100, donde p es el precio de cierre del dia.",
+    topNoteText: "Precios mensuales del WTI (verde: cierre > apertura; rojo: cierre < apertura). El mes en curso usa el ultimo dato disponible (Yahoo Finance, CL=F). El panel inferior muestra el ROC a 12 meses:",
+    bottomNoteText: "",
+    formulaText: "(p",
+    formulaTailText: " - p",
+    formulaMidText: ") / p",
+    formulaEndText: "donde p es el precio de cierre mensual.",
     sourceLabel: "Fuente:",
-    sourceText: "FRED DCOILWTICO; Ted @TedPillows, @marketmike.",
+    sourceText: "FRED DCOILWTICO; Yahoo Finance CL=F; Ted @TedPillows, @marketmike.",
     homeLabel: "Abrir Macro Plots",
     historicalLabel: "Historia del precio del petróleo",
     rallyLabel: "Rally 2026",
@@ -223,16 +229,19 @@ function linePath(points) {
   return points.map(([x, y], index) => `${index === 0 ? "M" : "L"} ${x} ${y}`).join(" ");
 }
 
-function InlineFormula() {
+function InlineFormula({ ui }) {
   return (
     <>
-      <span> (p</span>
-      <sub>t</sub>
-      <span> - p</span>
-      <sub>t-12</sub>
-      <span>) / p</span>
-      <sub>t-12</sub>
-      <span> * 100, donde p es el precio de cierre del dia.</span>
+      <span className="formula-inline">
+        <span> {ui.formulaText}</span>
+        <sub>t</sub>
+        <span>{ui.formulaTailText}</span>
+        <sub>t-12</sub>
+        <span>{ui.formulaMidText}</span>
+        <sub>t-12</sub>
+        <span> * 100</span>
+      </span>
+      <span>, {ui.formulaEndText}</span>
     </>
   );
 }
@@ -493,13 +502,20 @@ export default function App() {
 
             {hover ? (
               <g transform={`translate(${Math.min(WIDTH - 220, hover.x + 12)}, ${Math.max(22, hover.y - 56)})`}>
-                <rect width="196" height={hover.type === "candle" ? "72" : "56"} rx="8" fill="rgba(8,8,8,0.96)" stroke="rgba(255,209,102,0.26)" />
+                <rect width="196" height={hover.type === "candle" ? "108" : "56"} rx="8" fill="rgba(8,8,8,0.96)" stroke="rgba(255,209,102,0.26)" />
                 <text x="12" y="20" className="tooltip-title">{formatDate(hover.candle.date, lang)}</text>
                 {hover.type === "candle" ? (
-                  <>
-                    <text x="12" y="38" className="tooltip-body">O {hover.candle.open.toFixed(2)}  H {hover.candle.high.toFixed(2)}</text>
-                    <text x="12" y="56" className="tooltip-body">L {hover.candle.low.toFixed(2)}  C {hover.candle.close.toFixed(2)}</text>
-                  </>
+                  (() => {
+                    const candleColor = hover.candle.close >= hover.candle.open ? "#0ea34a" : "#c81e1e";
+                    return (
+                      <>
+                        <text x="12" y="40" className="tooltip-body" style={{ fill: candleColor }}>Open {hover.candle.open.toFixed(2)}</text>
+                        <text x="12" y="58" className="tooltip-body" style={{ fill: candleColor }}>High {hover.candle.high.toFixed(2)}</text>
+                        <text x="12" y="76" className="tooltip-body" style={{ fill: candleColor }}>Low {hover.candle.low.toFixed(2)}</text>
+                        <text x="12" y="94" className="tooltip-body" style={{ fill: candleColor }}>Close {hover.candle.close.toFixed(2)}</text>
+                      </>
+                    );
+                  })()
                 ) : (
                   <text x="12" y="40" className="tooltip-body">ROC(12): {hover.candle.roc12?.toFixed(2)}%</text>
                 )}
@@ -507,11 +523,11 @@ export default function App() {
             ) : null}
           </svg>
           <p className="footer-note">
-            <span>{ui.noteLabel}</span> {ui.topNoteText}
+            <span className="footer-label">{ui.noteLabel}</span> {ui.topNoteText}
             {" "}{ui.bottomNoteText}
-            <InlineFormula />
+            <InlineFormula ui={ui} />
           </p>
-          <p className="footer-source"><span>{ui.sourceLabel}</span> {ui.sourceText}</p>
+          <p className="footer-source"><span className="footer-label">{ui.sourceLabel}</span> {ui.sourceText}</p>
           <div className="corner-actions">
             <button
               type="button"
