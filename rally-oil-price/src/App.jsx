@@ -14,6 +14,7 @@ const UI_TEXT = {
     downloadLabel: "Download CSV",
     downloadPngLabel: "Download PNG",
     g1Label: "Historical Oil Prices",
+    momentumLabel: "Momentum",
     homeLabel: "Open Macro Plots",
     playLabel: "Play",
     chartTitle: "",
@@ -39,6 +40,7 @@ const UI_TEXT = {
     downloadLabel: "Descargar CSV",
     downloadPngLabel: "Descargar PNG",
     g1Label: "Historia del precio del petróleo",
+    momentumLabel: "Momentum",
     homeLabel: "Abrir Macro Plots",
     playLabel: "Reproducir",
     chartTitle: "",
@@ -123,6 +125,9 @@ export default function App() {
   const historicalUrl = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
     ? "http://127.0.0.1:4179/"
     : (baseUrl.endsWith("/rally-oil-price/") ? baseUrl.replace(/\/rally-oil-price\/$/, "/historical-real-oil-price/") : "/historical-real-oil-price/");
+  const momentumUrl = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+    ? "http://127.0.0.1:4217/oil-price/ROC(12)/"
+    : (baseUrl.endsWith("/rally-oil-price/") ? baseUrl.replace(/\/rally-oil-price\/$/, "/ROC(12)/") : "/ROC(12)/");
   const macroPlotsUrl = "https://sebabecerra.github.io/macro-plots/";
 
   useEffect(() => {
@@ -236,6 +241,7 @@ export default function App() {
           <div className="brand-row">
             <a className="lang-btn link-btn" href={macroPlotsUrl} target="_blank" rel="noreferrer">{ui.homeLabel}</a>
             <a className="lang-btn link-btn" href={historicalUrl}>{ui.g1Label}</a>
+            <a className="lang-btn link-btn" href={momentumUrl}>{ui.momentumLabel}</a>
             <img src={`${import.meta.env.BASE_URL}logo_clean.png`} alt="SB" className="brand-logo" />
           </div>
         </div>

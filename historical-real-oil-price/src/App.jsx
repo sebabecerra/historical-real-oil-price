@@ -22,6 +22,8 @@ const UI_TEXT = {
     downloadPngLabel: 'Download PNG',
     macroPlotsLabel: 'Open Macro Plots',
     rallyLabel: 'Rally 2026',
+    momentumLabel: 'Momentum',
+    momentumLabel: 'Momentum',
     chartTitle: 'Crude oil prices, $2014/bbl',
     chartSubtitle: '2026 is year-to-date data.',
   },
@@ -35,6 +37,7 @@ const UI_TEXT = {
     downloadPngLabel: 'Descargar PNG',
     macroPlotsLabel: 'Abrir Macro Plots',
     rallyLabel: 'Rally 2026',
+    momentumLabel: 'Momentum',
     chartTitle: 'Precio del petroleo, $2014/bbl',
     chartSubtitle: '2026 corresponde a datos acumulados del año.',
   },
@@ -595,8 +598,11 @@ export default function App() {
   const dataUrl = `${import.meta.env.BASE_URL}data/oil-history.json`;
   const baseUrl = import.meta.env.BASE_URL;
   const rallyUrl = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
-    ? "http://127.0.0.1:4182/"
+    ? "http://127.0.0.1:4222/"
     : (baseUrl.endsWith("/historical-real-oil-price/") ? baseUrl.replace(/\/historical-real-oil-price\/$/, "/rally-oil-price/") : "/rally-oil-price/");
+  const momentumUrl = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+    ? "http://127.0.0.1:4223/"
+    : (baseUrl.endsWith("/historical-real-oil-price/") ? baseUrl.replace(/\/historical-real-oil-price\/$/, "/ROC(12)/") : "/ROC(12)/");
 
   useEffect(() => {
     fetch(dataUrl)
@@ -720,6 +726,12 @@ export default function App() {
               href={rallyUrl}
             >
               {ui.rallyLabel}
+            </a>
+            <a
+              className="lang-btn link-btn"
+              href={momentumUrl}
+            >
+              {ui.momentumLabel}
             </a>
             <img src={`${import.meta.env.BASE_URL}logo_clean.png`} alt="SB" className="brand-logo" />
           </div>
