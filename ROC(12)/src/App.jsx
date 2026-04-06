@@ -10,8 +10,9 @@ const UI = {
     noteLabel: "Note:",
     topNoteText: "Top panel shows monthly WTI prices: green when the closing price is above the opening price, and red when it is below. Each monthly bar uses the first observed price of the month as the opening price and the last observed price as the closing price. For April 2026, the chart uses a provisional month-to-date snapshot to capture the current move.",
     bottomNoteText: "Bottom panel shows ROC =",
+    formulaText: "(pt - pt-12) / pt-12 * 100, where p is the daily closing price.",
     sourceLabel: "Source:",
-    sourceText: "FRED DCOILWTICO; April 2026 extension from the current market snapshot used in the reference chart.",
+    sourceText: "FRED DCOILWTICO; Ted @TedPillows, @marketmike.",
     homeLabel: "Open Macro Plots",
     historicalLabel: "Historical Oil Prices",
     rallyLabel: "Rally 2026",
@@ -25,8 +26,9 @@ const UI = {
     noteLabel: "Nota:",
     topNoteText: "El panel superior muestra precios mensuales del WTI: en verde cuando el precio de cierre es mayor que el de apertura y en rojo cuando es menor. Cada barra mensual usa como precio de apertura el primer precio observado del mes y como precio de cierre el ultimo. Para abril de 2026, el grafico usa un snapshot provisional del mes en curso para capturar el movimiento actual.",
     bottomNoteText: "El panel inferior muestra ROC =",
+    formulaText: "(pt - pt-12) / pt-12 * 100, donde p es el precio de cierre del dia.",
     sourceLabel: "Fuente:",
-    sourceText: "FRED DCOILWTICO; extensión a abril de 2026 a partir del snapshot de mercado actual usado en el gráfico de referencia.",
+    sourceText: "FRED DCOILWTICO; Ted @TedPillows, @marketmike.",
     homeLabel: "Abrir Macro Plots",
     historicalLabel: "Historia del precio del petróleo",
     rallyLabel: "Rally 2026",
@@ -93,22 +95,110 @@ function downloadCsv(rows) {
   URL.revokeObjectURL(url);
 }
 
-function downloadSvgPng(svgNode) {
+function drawWrappedCanvasText(context, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let current = "";
+
+  words.forEach((word) => {
+    const candidate = current ? `${current} ${word}` : word;
+    if (context.measureText(candidate).width <= maxWidth || !current) {
+      current = candidate;
+    } else {
+      lines.push(current);
+      current = word;
+    }
+  });
+
+  if (current) lines.push(current);
+  lines.forEach((line, index) => context.fillText(line, x, y + index * lineHeight));
+  return lines.length * lineHeight;
+}
+
+function inlineExportStyles(svgNode) {
+  const apply = (selector, styles) => {
+    svgNode.querySelectorAll(selector).forEach((node) => {
+      Object.entries(styles).forEach(([key, value]) => {
+        node.style.setProperty(key, value);
+      });
+    });
+  };
+
+  apply(".axis-label", {
+    fill: "rgba(242,242,242,0.9)",
+    "font-size": "17px",
+    "font-weight": "600",
+    "font-family": "Arial, Helvetica, sans-serif",
+  });
+  apply(".x-axis-year", {
+    fill: "rgba(242,242,242,0.9)",
+    "font-size": "17px",
+    "font-weight": "600",
+    "font-family": "Arial, Helvetica, sans-serif",
+  });
+  apply(".event-label", {
+    fill: "#385dff",
+    "font-size": "14px",
+    "font-weight": "700",
+    "font-family": "Arial, Helvetica, sans-serif",
+  });
+  apply(".event-highlight", {
+    fill: "#f8fafc",
+    "font-size": "14px",
+    "font-weight": "700",
+    "font-family": "Arial, Helvetica, sans-serif",
+  });
+  apply(".tooltip-title", {
+    fill: "#f2f2f2",
+    "font-size": "14px",
+    "font-weight": "700",
+    "font-family": "Arial, Helvetica, sans-serif",
+  });
+  apply(".tooltip-body", {
+    fill: "rgba(244,247,251,0.92)",
+    "font-size": "12px",
+    "font-family": "Arial, Helvetica, sans-serif",
+  });
+}
+
+function downloadPanelPng(svgNode, ui) {
   if (!svgNode) return;
   const clone = svgNode.cloneNode(true);
   clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  inlineExportStyles(clone);
   const serialized = new XMLSerializer().serializeToString(clone);
   const blob = new Blob([serialized], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const image = new Image();
   image.onload = () => {
+    const exportWidth = WIDTH;
+    const headerHeight = 92;
+    const footerHeight = 118;
     const canvas = document.createElement("canvas");
-    canvas.width = WIDTH * 2;
-    canvas.height = HEIGHT * 2;
+    canvas.width = exportWidth * 2;
+    canvas.height = (headerHeight + HEIGHT + footerHeight) * 2;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.scale(2, 2);
-    ctx.drawImage(image, 0, 0, WIDTH, HEIGHT);
+    ctx.fillStyle = "#050505";
+    ctx.fillRect(0, 0, exportWidth, headerHeight + HEIGHT + footerHeight);
+
+    ctx.fillStyle = "#ffd166";
+    ctx.font = "700 30px Arial";
+    ctx.fillText(ui.heading, 28, 42);
+
+    ctx.fillStyle = "rgba(220, 220, 220, 0.62)";
+    ctx.font = "12px Arial";
+    drawWrappedCanvasText(ctx, ui.subtitle, 28, 66, exportWidth - 56, 16);
+
+    ctx.drawImage(image, 0, headerHeight, exportWidth, HEIGHT);
+
+    ctx.fillStyle = "rgba(220, 220, 220, 0.82)";
+    ctx.font = "italic 14px Arial";
+    const noteText = `${ui.noteLabel} ${ui.topNoteText} ${ui.bottomNoteText}${ui.formulaText}`;
+    drawWrappedCanvasText(ctx, noteText, 16, headerHeight + HEIGHT + 20, exportWidth - 32, 18);
+    drawWrappedCanvasText(ctx, `${ui.sourceLabel} ${ui.sourceText}`, 16, headerHeight + HEIGHT + 72, exportWidth - 32, 18);
+
     canvas.toBlob((pngBlob) => {
       if (!pngBlob) return;
       const pngUrl = URL.createObjectURL(pngBlob);
@@ -259,7 +349,7 @@ export default function App() {
               <p className="dashboard-subtitle">{ui.subtitle}</p>
             </div>
             <div className="lang-switch">
-              <button type="button" className="lang-btn" onClick={() => downloadSvgPng(svgRef.current)}>{ui.downloadPng}</button>
+              <button type="button" className="lang-btn" onClick={() => downloadPanelPng(svgRef.current, ui)}>{ui.downloadPng}</button>
               <button type="button" className="lang-btn" onClick={() => downloadCsv(chart.candles)}>{ui.downloadCsv}</button>
               <button type="button" className={`lang-btn ${lang === "es" ? "lang-btn-active" : ""}`} onClick={() => setLang("es")}>ES</button>
               <button type="button" className={`lang-btn ${lang === "en" ? "lang-btn-active" : ""}`} onClick={() => setLang("en")}>EN</button>
