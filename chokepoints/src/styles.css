@@ -128,7 +128,6 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
   color: rgba(242, 242, 242, 0.72);
   font-size: 13px;
   font-weight: 800;

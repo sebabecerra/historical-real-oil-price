@@ -13,6 +13,7 @@ const UI = {
     historicalLabel: 'Historical Oil Prices',
     rallyLabel: 'Rally 2026',
     momentumLabel: 'Momentum',
+    chokepointsLabel: 'Oil flows',
     originLabel: 'Origin',
     straitLabel: 'Strait of Hormuz',
     destinationLabel: 'Destination',
@@ -29,6 +30,7 @@ const UI = {
     historicalLabel: 'Historia del precio del petróleo',
     rallyLabel: 'Rally 2026',
     momentumLabel: 'Momentum',
+    chokepointsLabel: 'Flujos de petroleo',
     originLabel: 'Origen',
     straitLabel: 'Estrecho de Ormuz',
     destinationLabel: 'Destino',
@@ -168,6 +170,9 @@ export default function App() {
   const momentumUrl = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
     ? 'http://127.0.0.1:4223/'
     : '/oil-price/ROC(12)/';
+  const chokepointsUrl = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:4278/oil-price/chokepoints/'
+    : '/oil-price/chokepoints/';
   const macroPlotsUrl = 'https://sebabecerra.github.io/macro-plots/';
 
   const { topBands, bottomBands, topThroat, bottomThroat } = useMemo(() => {
@@ -202,6 +207,7 @@ export default function App() {
             <a className="lang-btn link-btn" href={historicalUrl}>{ui.historicalLabel}</a>
             <a className="lang-btn link-btn" href={rallyUrl}>{ui.rallyLabel}</a>
             <a className="lang-btn link-btn" href={momentumUrl}>{ui.momentumLabel}</a>
+            <a className="lang-btn link-btn" href={chokepointsUrl}>{ui.chokepointsLabel}</a>
           </div>
         </div>
         <div className="frame">

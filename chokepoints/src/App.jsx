@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 const UI = {
   en: {
-    heading: 'World Oil Transit Chokepoints, 1H25',
+    heading: 'World Oil Flows, 1H25',
     subtitle: 'Major maritime chokepoints shown as proportional funnels with selected origin and destination breakdowns from EIA figure data.',
     downloadPng: 'Download PNG',
     noteLabel: 'Note:',
@@ -13,7 +13,6 @@ const UI = {
     historicalLabel: 'Historical Oil Prices',
     rallyLabel: 'Rally 2026',
     momentumLabel: 'Momentum',
-    exportsLabel: 'Oil flows',
     unitLabel: 'million barrels per day',
     originLabel: 'Origins',
     destinationLabel: 'Destinations',
@@ -23,7 +22,7 @@ const UI = {
     totalCenterLabel: 'World oil flow',
   },
   es: {
-    heading: 'Cuellos de botella del petroleo mundial, 1S25',
+    heading: 'Flujos de petroleo mundial, 1S25',
     subtitle: 'Principales pasos maritimos como embudos proporcionales con aperturas seleccionadas de origen y destino desde los Excel de EIA.',
     downloadPng: 'Descargar PNG',
     noteLabel: 'Nota:',
@@ -34,7 +33,6 @@ const UI = {
     historicalLabel: 'Historia del precio del petroleo',
     rallyLabel: 'Rally 2026',
     momentumLabel: 'Momentum',
-    exportsLabel: 'Flujos de petroleo',
     unitLabel: 'millones de barriles diarios',
     originLabel: 'Origenes',
     destinationLabel: 'Destinos',
@@ -476,9 +474,6 @@ export default function App() {
   const momentumUrl = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
     ? 'http://127.0.0.1:4223/'
     : '/oil-price/ROC(12)/';
-  const flowsUrl = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
-    ? 'http://127.0.0.1:4267/oil-price/exports/'
-    : '/oil-price/exports/';
   const macroPlotsUrl = 'https://sebabecerra.github.io/macro-plots/';
 
   return (
@@ -504,9 +499,7 @@ export default function App() {
             <a className="lang-btn link-btn" href={historicalUrl}>{ui.historicalLabel}</a>
             <a className="lang-btn link-btn" href={rallyUrl}>{ui.rallyLabel}</a>
             <a className="lang-btn link-btn" href={momentumUrl}>{ui.momentumLabel}</a>
-            <a className="lang-btn link-btn" href={flowsUrl}>{ui.exportsLabel}</a>
             <label className="select-wrap">
-              <span>{ui.selectLabel}</span>
               <select value={selectedIndex} onChange={(event) => setSelectedIndex(Number(event.target.value))}>
                 {CHOKEPOINTS.map((item, index) => (
                   <option key={item.label.en} value={index}>
