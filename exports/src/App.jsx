@@ -3,12 +3,12 @@ import { useMemo, useRef, useState } from 'react';
 const UI = {
   en: {
     heading: 'Crude Oil Exports Transiting the Strait of Hormuz, 2025',
-    subtitle: 'Flow diagram reconstructed from the labeled shares in the reference graphic.',
+    subtitle: 'Flow diagram calculated from EIA figure data for 1Q25 flows through Hormuz.',
     downloadPng: 'Download PNG',
     noteLabel: 'Note:',
-    noteText: 'Percent labels and category mix follow the reference graphic. Band widths are computed directly from those shares.',
+    noteText: 'Band widths use the EIA 1Q25 figure data in million barrels per day. Percent labels are calculated from those values and rounded.',
     sourceLabel: 'Source:',
-    sourceText: 'Reference graphic based on U.S. Energy Information Administration analysis using Vortexa tanker tracking.',
+    sourceText: 'U.S. Energy Information Administration figure data, analysis based on Vortexa tanker tracking.',
     homeLabel: 'Open Macro Plots',
     historicalLabel: 'Historical Oil Prices',
     rallyLabel: 'Rally 2026',
@@ -19,12 +19,12 @@ const UI = {
   },
   es: {
     heading: 'Exportaciones de crudo que transitan por el Estrecho de Ormuz, 2025',
-    subtitle: 'Diagrama de flujos reconstruido desde las participaciones rotuladas en el gráfico de referencia.',
+    subtitle: 'Diagrama de flujos calculado desde la data EIA para 1T25 a traves de Ormuz.',
     downloadPng: 'Descargar PNG',
     noteLabel: 'Nota:',
-    noteText: 'Los porcentajes y categorías siguen el gráfico de referencia. El ancho de cada banda se calcula directamente desde esas participaciones.',
+    noteText: 'El ancho de cada banda usa la data EIA de 1T25 en millones de barriles diarios. Los porcentajes se calculan desde esos valores y se redondean.',
     sourceLabel: 'Fuente:',
-    sourceText: 'Gráfico de referencia basado en análisis de la U.S. Energy Information Administration usando trazado de buques de Vortexa.',
+    sourceText: 'Data de la figura de la U.S. Energy Information Administration, analisis basado en trazado de buques de Vortexa.',
     homeLabel: 'Abrir Macro Plots',
     historicalLabel: 'Historia del precio del petróleo',
     rallyLabel: 'Rally 2026',
@@ -36,23 +36,24 @@ const UI = {
 };
 
 const ORIGINS = [
-  { name: 'Qatar', pct: 5 },
-  { name: 'Kuwait', pct: 10 },
-  { name: 'Iran', pct: 11 },
-  { name: 'United Arab\nEmirates', pct: 14 },
-  { name: 'Iraq', pct: 22 },
-  { name: 'Saudi Arabia', pct: 38 },
+  { label: { en: 'Iran', es: 'Iran' }, pct: 10.6, value: 1.5071044777777776 },
+  { label: { en: 'Iraq', es: 'Irak' }, pct: 22.8, value: 3.2444031 },
+  { label: { en: 'Kuwait', es: 'Kuwait' }, pct: 10.1, value: 1.4316576000000001 },
+  { label: { en: 'Other', es: 'Otros' }, pct: 1.9, value: 0.27705627777777941 },
+  { label: { en: 'Qatar', es: 'Qatar' }, pct: 4.4, value: 0.62986996666666661 },
+  { label: { en: 'Saudi Arabia', es: 'Arabia\nSaudita' }, pct: 37.2, value: 5.2924360222222218 },
+  { label: { en: 'United Arab\nEmirates', es: 'Emiratos Arabes\nUnidos' }, pct: 12.9, value: 1.8260873777777777 },
 ];
 
 const DESTINATIONS = [
-  { name: 'Rest of\nWorld', pct: 2, dx: -34 },
-  { name: 'United\nStates', pct: 3, dx: -18 },
-  { name: 'Europe', pct: 4 },
-  { name: 'Other Asia\nand Oceania', pct: 16, boxed: true },
-  { name: 'Japan', pct: 12 },
-  { name: 'South\nKorea', pct: 12 },
-  { name: 'India', pct: 14 },
-  { name: 'China', pct: 37, boxed: true },
+  { label: { en: 'China', es: 'China' }, pct: 37.7, value: 5.351104733333333, boxed: true },
+  { label: { en: 'Europe', es: 'Europa' }, pct: 3.8, value: 0.53445374444444438 },
+  { label: { en: 'India', es: 'India' }, pct: 14.7, value: 2.0847073444444444 },
+  { label: { en: 'Japan', es: 'Japon' }, pct: 10.9, value: 1.5539696444444444 },
+  { label: { en: 'Other Asia\nand Oceania', es: 'Otra Asia\ny Oceania' }, pct: 13.9, value: 1.9806085333333334, boxed: true },
+  { label: { en: 'Rest of\nWorld', es: 'Resto\ndel\nmundo' }, pct: 4.5, value: 0.64349061111111006, dx: 6 },
+  { label: { en: 'South\nKorea', es: 'Corea\ndel\nSur' }, pct: 12.0, value: 1.7038058555555555, dx: 10 },
+  { label: { en: 'United\nStates', es: 'Estados\nUnidos' }, pct: 2.5, value: 0.35647435555555557, dx: 12 },
 ];
 
 const WIDTH = 1080;
@@ -76,13 +77,21 @@ const BOTTOM_FLOW_Y = 446;
 const BOTTOM_BOX_Y = 748;
 const BOX_H = 20;
 const FULL_GAP = 18;
-const THROAT_SCALE = 0.92;
+const THROAT_SCALE = 0.42;
 const THROAT_GAP = 0;
-const THROAT_LEFT = LEFT + (FULL_WIDTH - FULL_WIDTH * THROAT_SCALE);
 const THROAT_WIDTH = FULL_WIDTH * THROAT_SCALE;
+const THROAT_LEFT = LEFT + (FULL_WIDTH - THROAT_WIDTH) / 2;
 
 function splitLines(label) {
   return label.split('\n');
+}
+
+function localizedLabel(item, lang) {
+  return item.label?.[lang] ?? item.label?.en ?? item.name;
+}
+
+function formatPct(value) {
+  return `${Math.round(value)}%`;
 }
 
 function layoutBands(items, left, width, gap) {
@@ -98,8 +107,10 @@ function layoutBands(items, left, width, gap) {
 }
 
 function flowBandPath(top, throat, y0, y1) {
-  const c1y = y0 + (y1 - y0) * 0.34;
-  const c2y = y0 + (y1 - y0) * 0.78;
+  const dy = y1 - y0;
+  const c1y = y0 + dy * 0.42;
+  const c2y = y0 + dy * 0.74;
+
   return [
     `M ${top.x} ${y0}`,
     `C ${top.x} ${c1y}, ${throat.x} ${c2y}, ${throat.x} ${y1}`,
@@ -197,31 +208,32 @@ export default function App() {
           <svg ref={svgRef} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="chart" role="img" aria-label={ui.heading}>
             <rect width={WIDTH} height={HEIGHT} fill={BG} />
 
-            <text x={LEFT + FULL_WIDTH / 2} y="34" textAnchor="middle" fill={TEXT} fontSize="18" fontWeight="700">{ui.originLabel}</text>
-            <text x={LEFT + FULL_WIDTH / 2} y={STRAIT_Y + STRAIT_H / 2 + 5} textAnchor="middle" fill={TEXT} fontSize="16" fontWeight="700">{ui.straitLabel}</text>
+            <text x={LEFT + FULL_WIDTH / 2} y={STRAIT_Y + STRAIT_H / 2 + 5} textAnchor="middle" fill="#ffffff" fontSize="16" fontWeight="800">{ui.straitLabel}</text>
 
             {topBands.map((band, index) => (
               <g key={band.name}>
                 <path d={flowBandPath(band, topThroat[index], TOP_FLOW_Y, STRAIT_Y)} fill={TOP_FLOW_FILL} stroke={TOP_FLOW_STROKE} strokeWidth="1" opacity="0.95" />
-                {splitLines(band.name).map((line, idx, arr) => (
+                {splitLines(localizedLabel(band, lang)).map((line, idx, arr) => (
                   <text key={idx} x={band.x + band.w / 2} y={82 - (arr.length - idx - 1) * 14} textAnchor="middle" fill={TEXT} fontSize="14" fontWeight="700">{line}</text>
                 ))}
-                <text x={band.x + band.w / 2} y={TOP_BOX_Y + 14} textAnchor="middle" fill="#ffffff" fontSize="16" fontWeight="800">{band.pct}%</text>
+                <text x={band.x + band.w / 2} y={TOP_BOX_Y + 14} textAnchor="middle" fill="#ffffff" stroke="rgba(0,0,0,0.36)" strokeWidth="3" paintOrder="stroke" fontSize="16" fontWeight="800">{formatPct(band.pct)}</text>
               </g>
             ))}
+
+            <text x={LEFT + FULL_WIDTH / 2} y="34" textAnchor="middle" fill="#ffffff" fontSize="18" fontWeight="800">{ui.originLabel}</text>
 
 
             {bottomBands.map((band, index) => (
               <g key={band.name}>
                 <path d={flowBandPath(bottomThroat[index], band, BOTTOM_FLOW_Y, BOTTOM_BOX_Y)} fill={BOTTOM_FLOW_FILL} stroke={BOTTOM_FLOW_STROKE} strokeWidth="1" opacity="0.95" />
-                <text x={band.x + band.w / 2} y={BOTTOM_BOX_Y + 14} textAnchor="middle" fill="#ffffff" fontSize="16" fontWeight="800">{band.pct}%</text>
-                {splitLines(band.name).map((line, idx) => (
+                <text x={band.x + band.w / 2} y={BOTTOM_BOX_Y + 14} textAnchor="middle" fill="#ffffff" stroke="rgba(0,0,0,0.36)" strokeWidth="3" paintOrder="stroke" fontSize="16" fontWeight="800">{formatPct(band.pct)}</text>
+                {splitLines(localizedLabel(band, lang)).map((line, idx) => (
                   <text key={idx} x={band.x + band.w / 2 + (band.dx ?? 0)} y={786 + idx * 14} textAnchor="middle" fill={TEXT} fontSize="14" fontWeight="700">{line}</text>
                 ))}
               </g>
             ))}
 
-            <text x={LEFT + FULL_WIDTH / 2} y="852" textAnchor="middle" fill={TEXT} fontSize="18" fontWeight="700">{ui.destinationLabel}</text>
+            <text x={LEFT + FULL_WIDTH / 2} y="852" textAnchor="middle" fill="#ffffff" fontSize="18" fontWeight="800">{ui.destinationLabel}</text>
           </svg>
           <div className="footer-note"><em>{ui.noteLabel} {ui.noteText}</em></div>
           <div className="footer-source"><em>{ui.sourceLabel} {ui.sourceText}</em></div>
