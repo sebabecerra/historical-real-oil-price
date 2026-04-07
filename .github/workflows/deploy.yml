@@ -51,7 +51,7 @@ jobs:
 
       - name: Install dependencies (chokepoints)
         working-directory: ./chokepoints
-        run: npm ci
+        run: npm install
 
       - name: Build data
         working-directory: ./historical-real-oil-price
